@@ -1,16 +1,39 @@
 def import_libraries():
     try:
         import requests
+        globals()['requests'] = requests
+
         from bs4 import BeautifulSoup
+        globals()['BeautifulSoup'] = BeautifulSoup
+
         import pandas as pd
-        import sklearn 
-        import sklearn.datasets
+        globals()['pd'] = pd
+
+        import sklearn
+        globals()['sklearn'] = sklearn
+
+
         import statsmodels.api as sm
+        globals()['sm'] = sm
+
         from sklearn.model_selection import train_test_split
-        from sklearn.metrics import confusion_matrix, classification_report,roc_curve, auc
+        globals()['train_test_split'] = train_test_split
+
+        from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
+        globals()['confusion_matrix'] = confusion_matrix
+        globals()['classification_report'] = classification_report
+        globals()['roc_curve'] = roc_curve
+        globals()['auc'] = auc
+
         import matplotlib.pyplot as plt
+        globals()['plt'] = plt
+
         import numpy as np
-        import lightgbm
+        globals()['np'] = np
+
+        import lightgbm as lgb
+        globals()['lgb'] = lgb
+
         print("All libraries are imported successfully.")
 
     except ImportError as e:
@@ -95,9 +118,13 @@ def plot_roc_curve(y_test, y_pred_prob):
 
 
 def significant_coefficients(coefficient_names, coefficients, p_values, significance_threshold=0.05):
+    percentage_change = (np.exp(coefficients) - 1) * 100
+    results = []
 
     for name, coef, p_value in zip(coefficient_names, percentage_change, p_values):
         if p_value < significance_threshold:
-            print(f'{name}: {coef:.2f}% (Statistically significant)')
+            results.append(f'{name}: {coef:.2f}% (Statistically significant)')
         else:
-            print(f'{name}: {coef:.2f}%')
+            results.append(f'{name}: {coef:.2f}%')
+
+    return results
